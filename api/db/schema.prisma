@@ -16,3 +16,160 @@ model UserExample {
   email String  @unique
   name  String?
 }
+
+model User {
+  id            String              @id        @default(uuid())
+  email         String              @unique
+  first_name    String
+  last_name     String
+  Adresses      User_Address[]
+  Payments      User_Payment[]
+  Orders        Order_Details[]
+  Session       Shopping_Session[]
+  modified_at   DateTime            @updatedAt
+  createdAt     DateTime            @default(now())
+}
+
+
+model User_Address {
+  id                     String    @id    @default(uuid())
+  user                   User      @relation(fields: [user_id], references: [id])
+  user_id                String
+  address_description    String
+  city                   String
+  postal_code            String
+  country                String
+  phone                  String
+  modified_at            DateTime  @updatedAt
+  createdAt              DateTime  @default(now())
+}
+
+
+model User_Payment {
+  id            String    @id    @default(uuid())
+  user          User      @relation(fields: [user_id], references: [id])
+  user_id       String
+  payment_type  String
+  provider      String
+  account_no    String
+  expiry        String
+  modified_at   DateTime   @updatedAt
+  createdAt     DateTime   @default(now())
+}
+
+
+model Shopping_Session {
+  id            String        @id    @default(uuid())
+  user          User          @relation(fields: [user_id], references: [id])
+  user_id       String
+  total         Float
+  Cart_Item     Cart_Item[]
+  modified_at   DateTime      @updatedAt
+  createdAt     DateTime      @default(now())
+}
+
+
+model Cart_Item {
+  id            String            @id     @default(uuid())
+  session       Shopping_Session  @relation(fields: [session_id], references: [id])
+  session_id    String
+  product       Product           @relation(fields: [product_id], references: [id])
+  product_id    String
+  total         Float
+  modified_at   DateTime          @updatedAt
+  createdAt     DateTime          @default(now())
+}
+
+
+// Product
+
+model Product {
+  id            String              @id    @default(uuid())
+  category      Product_Category    @relation(fields: [category_id], references: [id])
+  category_id   String
+  inventory     Product_Inventory   @relation(fields: [inventory_id], references: [id])
+  inventory_id  String
+  discount      Discount            @relation(fields: [discount_id], references: [id])
+  discount_id   String
+  name          String
+  desc          String
+  SKU           String
+  price         String
+  active        Boolean
+  Order_Items   Order_Items[]
+  Cart_Item     Cart_Item[]
+  deleted_at    DateTime
+  modified_at   DateTime            @updatedAt
+  createdAt     DateTime            @default(now())
+}
+
+
+model Product_Category {
+  id            String    @id    @default(uuid())
+  Product       Product[]
+  name          String
+  desc          String
+  active        Boolean
+  deleted_at    DateTime
+  modified_at   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+}
+
+model Product_Inventory {
+  id            String    @id    @default(uuid())
+  Product       Product[]
+  quantity      Int
+  deleted_at    DateTime
+  modified_at   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+}
+
+
+model Discount {
+  id                String    @id    @default(uuid())
+  Product           Product[]
+  name              String
+  desc              String
+  discount_percent  Float
+  active            Boolean
+  deleted_at        DateTime
+  modified_at       DateTime  @updatedAt
+  createdAt         DateTime  @default(now())
+}
+
+
+// Order
+
+model Order_Details {
+  id                String            @id    @default(uuid())
+  user              User              @relation(fields: [user_id], references: [id])
+  user_id           String
+  payment_detail    Payment_Details   @relation(fields: [payment_id], references: [id])
+  payment_id        String            @unique
+  total             Float
+  Order_Items       Order_Items[]
+  modified_at       DateTime          @updatedAt
+  createdAt         DateTime          @default(now())
+}
+
+
+model Order_Items {
+  id                String           @id    @default(uuid())
+  order             Order_Details    @relation(fields: [order_id], references: [id])
+  order_id          String
+  product           Product          @relation(fields: [product_id], references: [id])
+  product_id        String
+  quantity          Float
+  modified_at       DateTime         @updatedAt
+  createdAt         DateTime         @default(now())
+}
+
+model Payment_Details {
+  id                String    @id    @default(uuid())
+  amount            Int
+  provider          String
+  status            String
+  orders            Order_Details?
+  modified_at       DateTime  @updatedAt
+  createdAt         DateTime  @default(now())
+}
