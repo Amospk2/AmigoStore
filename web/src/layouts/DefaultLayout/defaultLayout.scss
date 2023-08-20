@@ -1,9 +1,10 @@
 header{
   height: 60px;
+  color: white;
   display: flex;
   align-items: center;
   padding: 4px 32px;
-  background: white;
+  background: rgb(255, 123, 0);
   max-width: 100%;
   justify-content: space-between;
 
@@ -12,6 +13,10 @@ header{
 
     &>*{
       cursor: pointer;
+      transition: all 0.3s;
+      &:hover{
+        transform: scale(1.1);
+      }
     }
 
     &.pages{
