@@ -1,0 +1,25 @@
+header{
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 4px 32px;
+  background: white;
+  max-width: 100%;
+  justify-content: space-between;
+
+  nav{
+    display: flex;
+
+    &>*{
+      cursor: pointer;
+    }
+
+    &.pages{
+      gap: 32px;
+    }
+
+    &.icons{
+      gap: 20px;
+    }
+  }
+}
