@@ -11,41 +11,9 @@ generator client {
 // Define your own datamodels here and run `yarn redwood prisma migrate dev`
 // to create migrations for them and apply to your dev DB.
 // TODO: Please remove the following example:
-model UserExample {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-}
-
-model User {
-  id            String              @id        @default(uuid())
-  email         String              @unique
-  first_name    String
-  last_name     String
-  Adresses      User_Address[]
-  Payments      User_Payment[]
-  Orders        Order_Details[]
-  Session       Shopping_Session[]
-  modified_at   DateTime            @updatedAt
-  createdAt     DateTime            @default(now())
-}
 
 
-model User_Address {
-  id                     String    @id    @default(uuid())
-  user                   User      @relation(fields: [user_id], references: [id])
-  user_id                String
-  address_description    String
-  city                   String
-  postal_code            String
-  country                String
-  phone                  String
-  modified_at            DateTime  @updatedAt
-  createdAt              DateTime  @default(now())
-}
-
-
-model User_Payment {
+model UserPayment {
   id            String    @id    @default(uuid())
   user          User      @relation(fields: [user_id], references: [id])
   user_id       String
@@ -58,20 +26,74 @@ model User_Payment {
 }
 
 
-model Shopping_Session {
+model UserAddress {
+  id                     String    @id    @default(uuid())
+  user                   User      @relation(fields: [user_id], references: [id])
+  user_id                String
+  address_description    String
+  city                   String
+  postal_code            String
+  country                String
+  phone                  String
+  modified_at            DateTime  @updatedAt
+  createdAt              DateTime  @default(now())
+}
+
+// Order
+
+model OrderDetails {
+  id                String            @id    @default(uuid())
+  user              User              @relation(fields: [user_id], references: [id])
+  user_id           String
+  payment_detail    PaymentDetails   @relation(fields: [payment_id], references: [id])
+  payment_id        String            @unique
+  total             Float
+  OrderItems        OrderItems[]
+  modified_at       DateTime          @updatedAt
+  createdAt         DateTime          @default(now())
+}
+
+
+model OrderItems {
+  id                String           @id    @default(uuid())
+  order             OrderDetails    @relation(fields: [order_id], references: [id])
+  order_id          String
+  product           Product          @relation(fields: [product_id], references: [id])
+  product_id        String
+  quantity          Float
+  modified_at       DateTime         @updatedAt
+  createdAt         DateTime         @default(now())
+}
+
+
+model ShoppingSession {
   id            String        @id    @default(uuid())
   user          User          @relation(fields: [user_id], references: [id])
   user_id       String
   total         Float
-  Cart_Item     Cart_Item[]
+  CartItem     CartItem[]
   modified_at   DateTime      @updatedAt
   createdAt     DateTime      @default(now())
 }
 
 
-model Cart_Item {
+model User {
+  id            String              @id        @default(uuid())
+  email         String              @unique
+  first_name    String
+  last_name     String
+  Adresses      UserAddress[]
+  Payments      UserPayment[]
+  Orders        OrderDetails[]
+  Session       ShoppingSession[]
+  modified_at   DateTime            @updatedAt
+  createdAt     DateTime            @default(now())
+}
+
+
+model CartItem {
   id            String            @id     @default(uuid())
-  session       Shopping_Session  @relation(fields: [session_id], references: [id])
+  session       ShoppingSession  @relation(fields: [session_id], references: [id])
   session_id    String
   product       Product           @relation(fields: [product_id], references: [id])
   product_id    String
@@ -85,9 +107,9 @@ model Cart_Item {
 
 model Product {
   id            String              @id    @default(uuid())
-  category      Product_Category    @relation(fields: [category_id], references: [id])
+  category      ProductCategory    @relation(fields: [category_id], references: [id])
   category_id   String
-  inventory     Product_Inventory   @relation(fields: [inventory_id], references: [id])
+  inventory     ProductInventory   @relation(fields: [inventory_id], references: [id])
   inventory_id  String
   discount      Discount            @relation(fields: [discount_id], references: [id])
   discount_id   String
@@ -96,15 +118,15 @@ model Product {
   SKU           String
   price         String
   active        Boolean
-  Order_Items   Order_Items[]
-  Cart_Item     Cart_Item[]
+  OrderItems   OrderItems[]
+  CartItem     CartItem[]
   deleted_at    DateTime
   modified_at   DateTime            @updatedAt
   createdAt     DateTime            @default(now())
 }
 
 
-model Product_Category {
+model ProductCategory {
   id            String    @id    @default(uuid())
   Product       Product[]
   name          String
@@ -115,7 +137,7 @@ model Product_Category {
   createdAt     DateTime  @default(now())
 }
 
-model Product_Inventory {
+model ProductInventory {
   id            String    @id    @default(uuid())
   Product       Product[]
   quantity      Int
@@ -138,38 +160,12 @@ model Discount {
 }
 
 
-// Order
-
-model Order_Details {
-  id                String            @id    @default(uuid())
-  user              User              @relation(fields: [user_id], references: [id])
-  user_id           String
-  payment_detail    Payment_Details   @relation(fields: [payment_id], references: [id])
-  payment_id        String            @unique
-  total             Float
-  Order_Items       Order_Items[]
-  modified_at       DateTime          @updatedAt
-  createdAt         DateTime          @default(now())
-}
-
-
-model Order_Items {
-  id                String           @id    @default(uuid())
-  order             Order_Details    @relation(fields: [order_id], references: [id])
-  order_id          String
-  product           Product          @relation(fields: [product_id], references: [id])
-  product_id        String
-  quantity          Float
-  modified_at       DateTime         @updatedAt
-  createdAt         DateTime         @default(now())
-}
-
-model Payment_Details {
+model PaymentDetails {
   id                String    @id    @default(uuid())
   amount            Int
   provider          String
   status            String
-  orders            Order_Details?
+  orders            OrderDetails?
   modified_at       DateTime  @updatedAt
   createdAt         DateTime  @default(now())
 }
