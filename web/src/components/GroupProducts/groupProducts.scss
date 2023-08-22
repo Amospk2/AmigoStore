@@ -1,0 +1,36 @@
+.group-products{
+  background-color: var(--chakra-colors-primary-100);
+  color: var(--chakra-colors-secondary-100);
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .gp-header{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 25px;
+  }
+
+  .gp-group-images{
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    .gp-image{
+      cursor: pointer;
+      transition: all 0.5s;
+      &:hover{
+        transform: scale(1.03);
+      }
+    }
+  }
+
+  .gp-image-legend{
+    text-align: center;
+    margin-top: 10px;
+    font-size: 20px;
+  }
+}
