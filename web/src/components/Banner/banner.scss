@@ -1,0 +1,32 @@
+
+
+section{
+  position: relative;
+  .floating-ad{
+    display: flex;
+    flex-direction: column;
+    padding: 40px 20px;
+    position: absolute;
+    width: 450px;
+    height: 330px;
+    background-color: var(--chakra-colors-primary-100);
+    top: 0;
+    right: 0;
+    margin-right: 5%;
+    margin-top: 17%;
+    color: white;
+
+    .charm{
+      letter-spacing: 2px;
+    }
+
+    .ad-header{
+      font-weight: 600;
+      font-size: 2rem;
+    }
+
+    .ad-description{
+      margin-bottom: 25px;
+    }
+  }
+}
