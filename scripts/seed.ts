@@ -194,7 +194,7 @@ export default async () => {
     )
 
     Promise.all(
-      userAdrressData.map(async (data: Prisma.UserAddressCreateArgs['data']) => {
+      userAddressData.map(async (data: Prisma.UserAddressCreateArgs['data']) => {
         const record = await db.userAddress.create({ data })
         console.log(record)
       })
