@@ -65,6 +65,10 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
+    "hashedPassword" TEXT NOT NULL,
+    "salt" TEXT NOT NULL,
+    "resetToken" TEXT,
+    "resetTokenExpiresAt" DATETIME,
     "modified_at" DATETIME NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -89,10 +93,9 @@ CREATE TABLE "Product" (
     "discount_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "desc" TEXT NOT NULL,
-    "SKU" TEXT NOT NULL,
-    "price" TEXT NOT NULL,
-    "active" BOOLEAN NOT NULL,
-    "deleted_at" DATETIME NOT NULL,
+    "SKU" TEXT,
+    "price" TEXT,
+    "active" BOOLEAN NOT NULL DEFAULT false,
     "modified_at" DATETIME NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "Product_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "ProductCategory" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -106,7 +109,6 @@ CREATE TABLE "ProductCategory" (
     "name" TEXT NOT NULL,
     "desc" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL,
-    "deleted_at" DATETIME NOT NULL,
     "modified_at" DATETIME NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -115,7 +117,6 @@ CREATE TABLE "ProductCategory" (
 CREATE TABLE "ProductInventory" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "quantity" INTEGER NOT NULL,
-    "deleted_at" DATETIME NOT NULL,
     "modified_at" DATETIME NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -127,7 +128,6 @@ CREATE TABLE "Discount" (
     "desc" TEXT NOT NULL,
     "discount_percent" REAL NOT NULL,
     "active" BOOLEAN NOT NULL,
-    "deleted_at" DATETIME NOT NULL,
     "modified_at" DATETIME NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -140,6 +140,24 @@ CREATE TABLE "PaymentDetails" (
     "status" TEXT NOT NULL,
     "modified_at" DATETIME NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "ImageProduct" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "product_id" TEXT NOT NULL,
+    CONSTRAINT "ImageProduct_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "ImageUser" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    CONSTRAINT "ImageUser_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex

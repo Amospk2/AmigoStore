@@ -73,16 +73,21 @@ model ShoppingSession {
 }
 
 model User {
-  id          String            @id @default(uuid())
-  email       String            @unique
-  first_name  String
-  last_name   String
-  Adresses    UserAddress[]
-  Payments    UserPayment[]
-  Orders      OrderDetails[]
-  Session     ShoppingSession[]
-  modified_at DateTime          @updatedAt
-  createdAt   DateTime          @default(now())
+  id                  String              @id        @default(uuid())
+  email               String              @unique
+  first_name          String
+  last_name           String
+  hashedPassword      String
+  salt                String
+  resetToken          String?
+  resetTokenExpiresAt DateTime?
+  Adresses            UserAddress[]
+  Payments            UserPayment[]
+  Orders              OrderDetails[]
+  ImageUser           ImageUser[]
+  Session             ShoppingSession[]
+  modified_at         DateTime            @updatedAt
+  createdAt           DateTime            @default(now())
 }
 
 model CartItem {
@@ -99,56 +104,52 @@ model CartItem {
 // Product
 
 model Product {
-  id           String           @id @default(uuid())
-  category     ProductCategory  @relation(fields: [category_id], references: [id])
-  category_id  String
-  inventory    ProductInventory @relation(fields: [inventory_id], references: [id])
-  inventory_id String
-  discount     Discount         @relation(fields: [discount_id], references: [id])
-  discount_id  String
-  name         String
-  desc         String
-  SKU          String
-  price        String
-  active       Boolean
-  OrderItems   OrderItems[]
-  CartItem     CartItem[]
-  deleted_at   DateTime
-  modified_at  DateTime         @updatedAt
-  createdAt    DateTime         @default(now())
-  ImageProduct ImageProduct[]
+  id            String              @id    @default(uuid())
+  category      ProductCategory     @relation(fields: [category_id], references: [id])
+  category_id   String
+  inventory     ProductInventory    @relation(fields: [inventory_id], references: [id])
+  inventory_id  String
+  discount      Discount            @relation(fields: [discount_id], references: [id])
+  discount_id   String
+  name          String
+  desc          String
+  SKU           String?
+  price         String?
+  active        Boolean             @default(false)
+  OrderItems    OrderItems[]
+  CartItem      CartItem[]
+  ImageProduct  ImageProduct[]
+  modified_at   DateTime            @updatedAt
+  createdAt     DateTime            @default(now())
 }
 
 model ProductCategory {
-  id          String    @id @default(uuid())
-  Product     Product[]
-  name        String
-  desc        String
-  active      Boolean
-  deleted_at  DateTime
-  modified_at DateTime  @updatedAt
-  createdAt   DateTime  @default(now())
+  id            String    @id    @default(uuid())
+  Product       Product[]
+  name          String
+  desc          String
+  active        Boolean
+  modified_at   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
 }
 
 model ProductInventory {
-  id          String    @id @default(uuid())
-  Product     Product[]
-  quantity    Int
-  deleted_at  DateTime
-  modified_at DateTime  @updatedAt
-  createdAt   DateTime  @default(now())
+  id            String    @id    @default(uuid())
+  Product       Product[]
+  quantity      Int
+  modified_at   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
 }
 
 model Discount {
-  id               String    @id @default(uuid())
-  Product          Product[]
-  name             String
-  desc             String
-  discount_percent Float
-  active           Boolean
-  deleted_at       DateTime
-  modified_at      DateTime  @updatedAt
-  createdAt        DateTime  @default(now())
+  id                String    @id    @default(uuid())
+  Product           Product[]
+  name              String
+  desc              String
+  discount_percent  Float
+  active            Boolean
+  modified_at       DateTime  @updatedAt
+  createdAt         DateTime  @default(now())
 }
 
 model PaymentDetails {
@@ -162,17 +163,17 @@ model PaymentDetails {
 }
 
 model ImageProduct {
-  id         Int     @id @default(autoincrement())
+  id         String      @id @default(uuid())
   title      String
   url        String
-  product    Product @relation(fields: [product_id], references: [id])
+  product    Product  @relation(fields: [product_id], references: [id])
   product_id String
 }
 
 model ImageUser {
-  id Int  @id @default(autoincrement())
-  title String
-  url String
-  user User @relation(fields: [user_id], references: [id])
-  user_id String
+  id          String      @id     @default(uuid())
+  title       String
+  url         String
+  user        User        @relation(fields: [user_id], references: [id])
+  user_id     String
 }
