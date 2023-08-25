@@ -11,6 +11,7 @@
     ]
   },
   "dependencies": {
+    "@redwoodjs/auth-dbauth-web": "6.0.7",
     "@redwoodjs/forms": "6.0.7",
     "@redwoodjs/router": "6.0.7",
     "@redwoodjs/web": "6.0.7",
