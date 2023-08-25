@@ -11,8 +11,169 @@ generator client {
 // Define your own datamodels here and run `yarn redwood prisma migrate dev`
 // to create migrations for them and apply to your dev DB.
 // TODO: Please remove the following example:
-model UserExample {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+
+model UserPayment {
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [user_id], references: [id])
+  user_id      String
+  payment_type String
+  provider     String
+  account_no   String
+  expiry       String
+  modified_at  DateTime @updatedAt
+  createdAt    DateTime @default(now())
+}
+
+model UserAddress {
+  id                  String   @id @default(uuid())
+  user                User     @relation(fields: [user_id], references: [id])
+  user_id             String
+  address_description String
+  city                String
+  postal_code         String
+  country             String
+  phone               String
+  modified_at         DateTime @updatedAt
+  createdAt           DateTime @default(now())
+}
+
+// Order
+
+model OrderDetails {
+  id             String         @id @default(uuid())
+  user           User           @relation(fields: [user_id], references: [id])
+  user_id        String
+  payment_detail PaymentDetails @relation(fields: [payment_id], references: [id])
+  payment_id     String         @unique
+  total          Float
+  OrderItems     OrderItems[]
+  modified_at    DateTime       @updatedAt
+  createdAt      DateTime       @default(now())
+}
+
+model OrderItems {
+  id          String       @id @default(uuid())
+  order       OrderDetails @relation(fields: [order_id], references: [id])
+  order_id    String
+  product     Product      @relation(fields: [product_id], references: [id])
+  product_id  String
+  quantity    Float
+  modified_at DateTime     @updatedAt
+  createdAt   DateTime     @default(now())
+}
+
+model ShoppingSession {
+  id          String     @id @default(uuid())
+  user        User       @relation(fields: [user_id], references: [id])
+  user_id     String
+  total       Float
+  CartItem    CartItem[]
+  modified_at DateTime   @updatedAt
+  createdAt   DateTime   @default(now())
+}
+
+model User {
+  id                  String              @id        @default(uuid())
+  email               String              @unique
+  first_name          String
+  last_name           String
+  hashedPassword      String
+  salt                String
+  resetToken          String?
+  resetTokenExpiresAt DateTime?
+  Adresses            UserAddress[]
+  Payments            UserPayment[]
+  Orders              OrderDetails[]
+  ImageUser           ImageUser[]
+  Session             ShoppingSession[]
+  modified_at         DateTime            @updatedAt
+  createdAt           DateTime            @default(now())
+}
+
+model CartItem {
+  id          String          @id @default(uuid())
+  session     ShoppingSession @relation(fields: [session_id], references: [id])
+  session_id  String
+  product     Product         @relation(fields: [product_id], references: [id])
+  product_id  String
+  total       Float
+  modified_at DateTime        @updatedAt
+  createdAt   DateTime        @default(now())
+}
+
+// Product
+
+model Product {
+  id            String              @id    @default(uuid())
+  category      ProductCategory     @relation(fields: [category_id], references: [id])
+  category_id   String
+  inventory     ProductInventory    @relation(fields: [inventory_id], references: [id])
+  inventory_id  String
+  discount      Discount            @relation(fields: [discount_id], references: [id])
+  discount_id   String
+  name          String
+  desc          String
+  SKU           String?
+  price         String?
+  active        Boolean             @default(false)
+  OrderItems    OrderItems[]
+  CartItem      CartItem[]
+  ImageProduct  ImageProduct[]
+  modified_at   DateTime            @updatedAt
+  createdAt     DateTime            @default(now())
+}
+
+model ProductCategory {
+  id            String    @id    @default(uuid())
+  Product       Product[]
+  name          String
+  desc          String
+  active        Boolean
+  modified_at   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+}
+
+model ProductInventory {
+  id            String    @id    @default(uuid())
+  Product       Product[]
+  quantity      Int
+  modified_at   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+}
+
+model Discount {
+  id                String    @id    @default(uuid())
+  Product           Product[]
+  name              String
+  desc              String
+  discount_percent  Float
+  active            Boolean
+  modified_at       DateTime  @updatedAt
+  createdAt         DateTime  @default(now())
+}
+
+model PaymentDetails {
+  id          String        @id @default(uuid())
+  amount      Int
+  provider    String
+  status      String
+  orders      OrderDetails?
+  modified_at DateTime      @updatedAt
+  createdAt   DateTime      @default(now())
+}
+
+model ImageProduct {
+  id         String      @id @default(uuid())
+  title      String
+  url        String
+  product    Product  @relation(fields: [product_id], references: [id])
+  product_id String
+}
+
+model ImageUser {
+  id          String      @id     @default(uuid())
+  title       String
+  url         String
+  user        User        @relation(fields: [user_id], references: [id])
+  user_id     String
 }
